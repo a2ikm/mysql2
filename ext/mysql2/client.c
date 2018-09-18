@@ -673,7 +673,7 @@ static VALUE rb_mysql_client_query(int argc, VALUE * argv, VALUE self) {
   } else if (wrapper->active_thread == thread_current) {
     rb_raise(cMysql2Error, "This connection is still waiting for a result, try again once you have the result");
   } else {
-    VALUE inspect = rb_inspect(wrapper->active_thread);
+    VALUE inspect = rb_obj_id(wrapper->active_thread);
     const char *thr = StringValueCStr(inspect);
 
     rb_raise(cMysql2Error, "This connection is in use by: %s", thr);

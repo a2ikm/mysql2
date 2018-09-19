@@ -41,8 +41,7 @@ static VALUE rb_hash_dup(VALUE other) {
   }
 
 #define MARK_CONN_INACTIVE(conn) \
-  if (!NIL_P(wrapper->active_thread)) \
-    fprintf(stderr, "[MARK_CONN_INACTIVE] Releasing active_thread: %ld\n", FIX2LONG(rb_obj_id(wrapper->active_thread))); \
+  fprintf(stderr, "[MARK_CONN_INACTIVE] Releasing active_thread: %ld\n", FIX2LONG(rb_obj_id(wrapper->active_thread))); \
   wrapper->active_thread = Qnil;
 
 #define GET_CLIENT(self) \
@@ -442,8 +441,7 @@ static void *nogvl_do_result(void *ptr, char use_result) {
 
   /* once our result is stored off, this connection is
      ready for another command to be issued */
-  if (!NIL_P(wrapper->active_thread))
-    fprintf(stderr, "[nogvl_do_result] Releasing active_thread: %ld\n", FIX2LONG(rb_obj_id(wrapper->active_thread)));
+  fprintf(stderr, "[nogvl_do_result] Releasing active_thread: %ld\n", FIX2LONG(rb_obj_id(wrapper->active_thread)));
   wrapper->active_thread = Qnil;
 
   return result;
@@ -589,8 +587,7 @@ static VALUE finish_and_mark_inactive(void *args) {
     result = (MYSQL_RES *)rb_thread_call_without_gvl(nogvl_store_result, wrapper, RUBY_UBF_IO, 0);
     mysql_free_result(result);
 
-    if (!NIL_P(wrapper->active_thread))
-      fprintf(stderr, "[finish_and_mark_inactive] Releasing active_thread: %ld\n", FIX2LONG(rb_obj_id(wrapper->active_thread)));
+    fprintf(stderr, "[finish_and_mark_inactive] Releasing active_thread: %ld\n", FIX2LONG(rb_obj_id(wrapper->active_thread)));
     wrapper->active_thread = Qnil;
   }
 
